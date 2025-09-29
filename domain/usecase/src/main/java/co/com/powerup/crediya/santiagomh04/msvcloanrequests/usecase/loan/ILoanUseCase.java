@@ -2,7 +2,6 @@ package co.com.powerup.crediya.santiagomh04.msvcloanrequests.usecase.loan;
 
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan.Loan;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan.gateways.LoanRepository;
-import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan.utils.LoanStatus;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,11 +15,13 @@ public class ILoanUseCase implements LoanUseCase{
 
     @Override
     public Mono<Loan> create(Loan loan) {
+        //Assign status PENDING_OF_REVISION by default
+        loan.setStatus(Loan.LoanStatus.PENDING_OF_REVISION.name());
         return this.repoLoan.createLoan(loan);
     }
 
     @Override
-    public Mono<Loan> updateLoanStatus(UUID loanId, LoanStatus newStatus) {
+    public Mono<Loan> updateLoanStatus(UUID loanId, String newStatus) {
         return this.repoLoan.updateLoanStatus(loanId, newStatus);
     }
 

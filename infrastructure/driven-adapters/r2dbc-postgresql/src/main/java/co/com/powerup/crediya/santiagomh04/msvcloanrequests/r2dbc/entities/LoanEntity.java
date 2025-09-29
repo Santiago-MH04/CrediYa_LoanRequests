@@ -1,30 +1,43 @@
-package co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan;
+package co.com.powerup.crediya.santiagomh04.msvcloanrequests.r2dbc.entities;
 
-import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loantype.LoanType;
-import lombok.Builder;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
-public class Loan {
+@Builder
+@Table("loans")
+public class LoanEntity {
+    @Id
     private UUID loanId;
+
+    @Column("name")
     private String identificationNumber;    //Just the identification number, and not the whole user, in order to separate responsibilities
+
+    @Column("adjudication_date")
     private LocalDate adjudicationDate;
+
+    @Column("deadline")
     private int deadline;   //The deadline will be measured in months
-    private LoanType loanType;
+
+    @Column("loan_type_id")
+    private Long loanTypeId;
+
+    @Column("amount")
     private BigDecimal amount;
+
+    @Column("status")
     private String status;
-        /*private LoanStatus status;*/
 
     public enum LoanStatus {
         PENDING_OF_REVISION,

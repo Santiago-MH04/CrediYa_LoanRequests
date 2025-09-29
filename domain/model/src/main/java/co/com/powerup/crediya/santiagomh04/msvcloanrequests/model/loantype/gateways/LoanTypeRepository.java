@@ -7,4 +7,6 @@ import reactor.core.publisher.Mono;
 public interface LoanTypeRepository {
     Mono<LoanType> createLoanType(LoanType loanType);
     Flux<LoanType> findAll();
+    Mono<LoanType> findById(Long id);
+    Mono<LoanType> findByName(String name);
 }
