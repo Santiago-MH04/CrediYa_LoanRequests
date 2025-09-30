@@ -1,23 +1,32 @@
-##Spring Configuration
 server:
   port: 8081
 spring:
   application:
-    name: msvc-loan-requests
+    name: "msvc-loan-requests"
   devtools:
     add-properties: false
   h2:
     console:
       enabled: true
-      path: /h2
+      path: "/h2"
   profiles:
-    include:
-
+    include: null
 adapters:
   r2dbc:
-    host: ${POSTGRESQL_HOST}
-    port: ${POSTGRESQL_PORT}
-    database: ${POSTGRESQL_DATABASE}
-    schema: ${POSTGRESQL_SCHEMA}
-    username: ${POSTGRESQL_USERNAME}
-    password: ${POSTGRESQL_PASSWORD}
+    host: "${POSTGRESQL_HOST}"
+    port: "${POSTGRESQL_PORT}"
+    database: "${POSTGRESQL_DATABASE}"
+    schema: "${POSTGRESQL_SCHEMA}"
+    username: "${POSTGRESQL_USERNAME}"
+    password: "${POSTGRESQL_PASSWORD}"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
