@@ -27,13 +27,15 @@ public class LoanMapper {
             });
     }
 
-    public LoanEntity toEntity(Loan loan){
-        LoanEntity loanEntity = this.objectMapper.map(loan, LoanEntity.class);
+    public Mono<LoanEntity> toEntity(Loan loan) {
+        String loanTypeName = loan.getLoanType().getName();
 
-        if (loan.getLoanType() != null){
-            loanEntity.setLoanTypeId(loan.getLoanType().getId());
-        }
-
-        return loanEntity;
+        // Completing the LoanType from partial mapping from entry-points layer
+        return this.repoLoanType.findByName(loanTypeName)
+            .map(fullLoanTypeEntity -> {
+                LoanEntity loanEntity = this.objectMapper.map(loan, LoanEntity.class);
+                    loanEntity.setLoanTypeId(fullLoanTypeEntity.getId());
+                return loanEntity;
+            });
     }
 }

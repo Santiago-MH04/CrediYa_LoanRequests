@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table("loans")
 public class LoanEntity {
     @Id
-    private UUID loanId;
+    private UUID id;
 
     @Column("name")
     private String identificationNumber;    //Just the identification number, and not the whole user, in order to separate responsibilities

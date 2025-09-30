@@ -16,7 +16,7 @@ public class ILoanUseCase implements LoanUseCase{
     @Override
     public Mono<Loan> create(Loan loan) {
         //Assign status PENDING_OF_REVISION by default
-        loan.setStatus(Loan.LoanStatus.PENDING_OF_REVISION.name());
+        loan.setStatus(Loan.LoanStatus.PENDING_OF_REVISION/*.name()*/);
         return this.repoLoan.createLoan(loan);
     }
 

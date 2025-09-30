@@ -21,7 +21,8 @@ public class LoanReactiveRepositoryAdapter implements LoanRepository {
 
     @Override
     public Mono<Loan> createLoan(Loan loan) {
-        return this.repoLoanReactive.save(this.loanMapper.toEntity(loan))
+        return this.loanMapper.toEntity(loan)
+            .flatMap(this.repoLoanReactive::save)
             .flatMap(this.loanMapper::toDomain);
     }
 
