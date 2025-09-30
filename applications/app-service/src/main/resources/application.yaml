@@ -1,6 +1,6 @@
 ##Spring Configuration
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
     name: msvc-loan-requests
@@ -12,3 +12,12 @@ spring:
       path: /h2
   profiles:
     include:
+
+adapters:
+  r2dbc:
+    host: ${POSTGRESQL_HOST}
+    port: ${POSTGRESQL_PORT}
+    database: ${POSTGRESQL_DATABASE}
+    schema: ${POSTGRESQL_SCHEMA}
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
