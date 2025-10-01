@@ -14,9 +14,19 @@ public class ILoanUseCase implements LoanUseCase{
     private final LoanRepository repoLoan;
 
     @Override
-    public Mono<Loan> create(Loan loan) {
+    public Flux<Loan> findByClientIdentificationNumber(String identificationNumber) {
+        return this.repoLoan.findByIdentificationNumber(identificationNumber);
+    }
+
+    @Override
+    public Mono<Loan> findByid(UUID id) {
+        return this.repoLoan.findById(id);
+    }
+
+    @Override
+    public Mono<Loan> createLoan(Loan loan) {
         //Assign status PENDING_OF_REVISION by default
-        loan.setStatus(Loan.LoanStatus.PENDING_OF_REVISION.name());
+        loan.setStatus(Loan.LoanStatus.PENDING_OF_REVISION/*.name()*/);
         return this.repoLoan.createLoan(loan);
     }
 
@@ -25,8 +35,4 @@ public class ILoanUseCase implements LoanUseCase{
         return this.repoLoan.updateLoanStatus(loanId, newStatus);
     }
 
-    @Override
-    public Flux<Loan> findByClientIdentificationNumber(String identificationNumber) {
-        return null;
-    }
 }

@@ -17,14 +17,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Loan {
-    private UUID loanId;
+    private UUID id;
     private String identificationNumber;    //Just the identification number, and not the whole user, in order to separate responsibilities
     private LocalDate adjudicationDate;
     private int deadline;   //The deadline will be measured in months
     private LoanType loanType;
     private BigDecimal amount;
-    private String status;
-        /*private LoanStatus status;*/
+    private LoanStatus status;
+        /*private String status;*/
 
     public enum LoanStatus {
         PENDING_OF_REVISION,

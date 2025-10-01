@@ -19,9 +19,9 @@ import java.util.UUID;
 @Table("loans")
 public class LoanEntity {
     @Id
-    private UUID loanId;
+    private UUID id;
 
-    @Column("name")
+    @Column("identification_number")
     private String identificationNumber;    //Just the identification number, and not the whole user, in order to separate responsibilities
 
     @Column("adjudication_date")
@@ -37,7 +37,7 @@ public class LoanEntity {
     private BigDecimal amount;
 
     @Column("status")
-    private String status;
+    private LoanStatus status;
 
     public enum LoanStatus {
         PENDING_OF_REVISION,
