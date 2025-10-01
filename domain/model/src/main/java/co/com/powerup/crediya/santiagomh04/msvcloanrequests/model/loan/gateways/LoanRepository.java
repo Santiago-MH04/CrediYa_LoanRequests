@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface LoanRepository {
     Mono<Loan> createLoan(Loan loan);
     Mono<Loan> updateLoanStatus(UUID loanId, String newStatus);
+    Mono<Loan> findById(UUID id);
     Flux<Loan> findByIdentificationNumber(String identificationNumber);
 }

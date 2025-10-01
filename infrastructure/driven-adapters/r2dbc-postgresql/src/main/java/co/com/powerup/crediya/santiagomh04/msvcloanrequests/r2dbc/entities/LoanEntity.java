@@ -37,7 +37,7 @@ public class LoanEntity {
     private BigDecimal amount;
 
     @Column("status")
-    private String status;
+    private LoanStatus status;
 
     public enum LoanStatus {
         PENDING_OF_REVISION,

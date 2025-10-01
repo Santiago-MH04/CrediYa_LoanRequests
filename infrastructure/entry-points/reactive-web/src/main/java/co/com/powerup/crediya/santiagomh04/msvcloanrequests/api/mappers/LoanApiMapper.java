@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring", uses = {LoanApiMapper.class})
+@Mapper(componentModel = "spring", uses = {LoanTypeApiMapper.class})
 public interface LoanApiMapper {
     @Mappings({
         @Mapping(target = "id", ignore = true),
@@ -17,7 +17,6 @@ public interface LoanApiMapper {
     })
     Loan toDomain(LoanRequestDTO loanRequestDTO);
 
-    /*@Mapping(source = "loanType.name", target = "loanTypeName")*/
     LoanResponseDTO toResponse(Loan loan);
 
     // Auxiliary method: maps the name into a partial LoanType

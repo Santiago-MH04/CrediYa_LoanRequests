@@ -1,6 +1,6 @@
 package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.config;
 
-import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.Handler;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.LoanHandler;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.RouterRest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class})
+@ContextConfiguration(classes = {RouterRest.class, LoanHandler.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 class ConfigTest {

@@ -20,6 +20,18 @@ public class LoanReactiveRepositoryAdapter implements LoanRepository {
     private final LoanMapper loanMapper;
 
     @Override
+    public Flux<Loan> findByIdentificationNumber(String identificationNumber) {
+        return this.repoLoanReactive.findByIdentificationNumber(identificationNumber)
+            .flatMap(this.loanMapper::toDomain);
+    }
+
+    @Override
+    public Mono<Loan> findById(UUID id) {
+        return this.repoLoanReactive.findById(id)
+            .flatMap(this.loanMapper::toDomain);
+    }
+
+    @Override
     public Mono<Loan> createLoan(Loan loan) {
         return this.loanMapper.toEntity(loan)
             .flatMap(this.repoLoanReactive::save)
@@ -30,15 +42,10 @@ public class LoanReactiveRepositoryAdapter implements LoanRepository {
     public Mono<Loan> updateLoanStatus(UUID loanId, String newStatus) {
         return this.repoLoanReactive.findById(loanId)
         .flatMap(le -> {
-            le.setStatus(LoanEntity.LoanStatus.valueOf(newStatus).name());
+            le.setStatus(LoanEntity.LoanStatus.valueOf(newStatus)/*.name()*/);
             return this.repoLoanReactive.save(le);
         })
         .flatMap(this.loanMapper::toDomain);
     }
 
-    @Override
-    public Flux<Loan> findByIdentificationNumber(String identificationNumber) {
-        return this.repoLoanReactive.findByIdentificationNumber(identificationNumber)
-            .flatMap(this.loanMapper::toDomain);
-    }
 }
