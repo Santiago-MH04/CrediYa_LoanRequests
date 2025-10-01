@@ -21,7 +21,7 @@ public class LoanEntity {
     @Id
     private UUID id;
 
-    @Column("name")
+    @Column("identification_number")
     private String identificationNumber;    //Just the identification number, and not the whole user, in order to separate responsibilities
 
     @Column("adjudication_date")
