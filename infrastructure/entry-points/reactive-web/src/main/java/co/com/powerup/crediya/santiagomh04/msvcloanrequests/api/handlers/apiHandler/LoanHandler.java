@@ -1,4 +1,4 @@
-package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers;
+package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler;
 
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanStatusDTO;

@@ -1,6 +1,6 @@
 package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api;
 
-import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.LoanHandler;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler.LoanHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

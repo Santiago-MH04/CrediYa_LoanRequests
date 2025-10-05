@@ -3,6 +3,8 @@ package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.businessLogic.BusinessLogicCauses;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.businessLogic.BusinessLogicException;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.gateway.BadGatewayException;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.gateway.GatewayCauses;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.requestBody.RequestBodyCauses;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.exceptions.requestBody.RequestBodyException;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan.Loan;
@@ -10,6 +12,8 @@ import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loan.gateways.
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loantype.LoanType;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.model.loantype.gateways.LoanTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -48,23 +52,25 @@ public class LoanValidator {
     public Mono<Loan> validateLoanExistence(UUID loanId) {
         return this.repoLoan.findById(loanId)
             .switchIfEmpty(Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.INVALID_LOAN_TYPE_ERROR.getMessage()
+                RequestBodyCauses.INVALID_LOAN_TYPE_ERROR.getMessage()
             )));
     }
-    /*public Flux<Loan> validateUserLoansExistence(String identificationNumber) {
-        return this.repoLoan.findByIdentificationNumber(identificationNumber)
-            .switchIfEmpty(Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.INVALID_LOAN_TYPE_ERROR.getMessage()
-            )));
-    }*/
+
     public Mono<Void> validateUserExists(String identificationNumber) {
         return this.authenticationWebClient.get()
             .uri("api/v1/users/{identificationNumber}", identificationNumber)
             .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                Mono.error(new BusinessLogicException(
+                    BusinessLogicCauses.USER_NOT_FOUND_ERROR.getMessage()
+                ))
+            )
+            .onStatus(HttpStatusCode::is5xxServerError, response ->
+                Mono.error(new BadGatewayException(
+                    GatewayCauses.REMOTE_SERVICE_UNAVAILABLE_ERROR.getMessage()
+                ))
+            )
             .bodyToMono(Map.class)
-            .switchIfEmpty(Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.USER_NOT_FOUND_ERROR.getMessage()
-            )))
             .then();
     }
 
@@ -94,11 +100,18 @@ public class LoanValidator {
         return this.authenticationWebClient.get()
             .uri("api/v1/users/{identificationNumber}", identificationNumber)
             .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                Mono.error(new BusinessLogicException(
+                    BusinessLogicCauses.USER_NOT_FOUND_ERROR.getMessage()
+                ))
+            )
+            .onStatus(HttpStatusCode::is5xxServerError, response ->
+                Mono.error(new BadGatewayException(
+                    GatewayCauses.REMOTE_SERVICE_UNAVAILABLE_ERROR.getMessage()
+                ))
+            )
             .bodyToMono(Map.class)
-            .map(user -> new BigInteger(user.get("baseSalary").toString()))
-            .switchIfEmpty(Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.USER_NOT_FOUND_ERROR.getMessage()
-            )));
+            .map(user -> new BigInteger(user.get("baseSalary").toString()));
     }
 
 
@@ -106,7 +119,7 @@ public class LoanValidator {
     private Mono<LoanType> validateLoanTypeRequested(String loanTypeName) {
         return this.repoLoanType.findByName(loanTypeName)
             .switchIfEmpty(Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.INVALID_LOAN_TYPE_ERROR.getMessage()
+                RequestBodyCauses.INVALID_LOAN_TYPE_ERROR.getMessage()
             )));
     }
 
@@ -117,7 +130,7 @@ public class LoanValidator {
 
         return invalidSalary ?
             Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.INSUFFICIENT_BASE_SALARY_ERROR.getMessage()))
+                RequestBodyCauses.INSUFFICIENT_BASE_SALARY_ERROR.getMessage()))
             :
             Mono.empty();
     }
@@ -130,7 +143,7 @@ public class LoanValidator {
 
         return deadlineOutOfRange ?
             Mono.error(new BusinessLogicException(
-                BusinessLogicCauses.DEADLINE_OUT_OF_RANGE_ERROR.getMessage()))
+                RequestBodyCauses.DEADLINE_OUT_OF_RANGE_ERROR.getMessage()))
             :
             Mono.empty();
     }
