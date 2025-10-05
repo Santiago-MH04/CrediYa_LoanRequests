@@ -1,6 +1,6 @@
 package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.config;
 
-import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.LoanHandler;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler.LoanHandler;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.RouterRest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
