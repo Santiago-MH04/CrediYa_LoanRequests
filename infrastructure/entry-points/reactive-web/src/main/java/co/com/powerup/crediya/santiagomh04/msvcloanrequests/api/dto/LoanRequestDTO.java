@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public record LoanRequestDTO(
     String identificationNumber,
     LocalDate adjudicationDate,
-    int deadline,
+    Integer deadline,
     String loanTypeName,
     BigDecimal amount/*,
     String status*/
