@@ -3,6 +3,7 @@ package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanStatusDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.mappers.LoanApiMapper;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.LoanValidator;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.usecase.loan.LoanUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,13 @@ public class LoanHandler {
     private final LoanUseCase loanUseCase;
     private final LoanApiMapper loanApiMapper;
 
+    private final LoanValidator loanValidator;
+
     public Mono<ServerResponse> listenGETUseCaseFindAllByIdentificationNumber(ServerRequest serverRequest) {
         String idNumber = serverRequest.pathVariable("identificationNumber");
 
-        return this.loanUseCase.findByClientIdentificationNumber(idNumber)
+        return this.loanValidator.validateUserExists(idNumber) // Mono<Void>
+            .thenMany(this.loanUseCase.findByClientIdentificationNumber(idNumber)) // Flux<Loan>
             .map(this.loanApiMapper::toResponse)
             .collectList()
             .flatMap(loanResponseDTOList ->
@@ -37,7 +41,7 @@ public class LoanHandler {
     public Mono<ServerResponse> listenGETUseCaseFindById(ServerRequest serverRequest) {
         UUID id = UUID.fromString(serverRequest.pathVariable("id"));
 
-        return this.loanUseCase.findByid(id)
+        return this.loanValidator.validateLoanExistence(id)
             .map(this.loanApiMapper::toResponse)
             .flatMap(loanResponseDTO ->
                 ServerResponse.status(HttpStatus.OK)
@@ -48,6 +52,7 @@ public class LoanHandler {
 
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(LoanRequestDTO.class)
+            .flatMap(this.loanValidator::validateLoanRequest)
             .map(this.loanApiMapper::toDomain)
             .flatMap(this.loanUseCase::createLoan)
             .map(this.loanApiMapper::toResponse)
