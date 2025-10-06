@@ -2,6 +2,7 @@ package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api;
 
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.ErrorResponseDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanResponseDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanStatusDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler.LoanHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +47,7 @@ public class RouterRest {
                     @ApiResponse(
                         responseCode = "200",
                         description = "Loan requests by user",
-                        content = @Content(array = @ArraySchema(schema = @Schema(implementation = LoanRequestDTO.class)))
+                        content = @Content(array = @ArraySchema(schema = @Schema(implementation = LoanResponseDTO.class)))
                     )
                 }
             )
@@ -66,7 +67,7 @@ public class RouterRest {
                     @ApiResponse(
                         responseCode = "200",
                         description = "Loan request found successfully",
-                        content = @Content(schema = @Schema(implementation = LoanRequestDTO.class))
+                        content = @Content(schema = @Schema(implementation = LoanResponseDTO.class))
                     ),
                     @ApiResponse(
                         responseCode = "404",
@@ -96,7 +97,7 @@ public class RouterRest {
                     @ApiResponse(
                         responseCode = "201",
                         description = "Loan request registered successfully",
-                        content = @Content(schema = @Schema(implementation = LoanRequestDTO.class))
+                        content = @Content(schema = @Schema(implementation = LoanResponseDTO.class))
                     ),
                     @ApiResponse(
                         responseCode = "404",
