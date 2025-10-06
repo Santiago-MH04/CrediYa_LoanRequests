@@ -1,7 +1,9 @@
 package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler;
 
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanResponseDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanStatusDTO;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.loggingHelpers.HandlerLoggingSupport;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.mappers.LoanApiMapper;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.validations.LoanValidator;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.usecase.loan.LoanUseCase;
@@ -23,6 +25,7 @@ public class LoanHandler {
     private final LoanApiMapper loanApiMapper;
 
     private final LoanValidator loanValidator;
+    private final HandlerLoggingSupport loggingSupport;
 
     public Mono<ServerResponse> listenGETUseCaseFindAllByIdentificationNumber(ServerRequest serverRequest) {
         String idNumber = serverRequest.pathVariable("identificationNumber");
@@ -51,28 +54,34 @@ public class LoanHandler {
     }
 
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(LoanRequestDTO.class)
+        Mono<LoanResponseDTO> postLogic = serverRequest.bodyToMono(LoanRequestDTO.class)
             .flatMap(this.loanValidator::validateLoanRequest)
             .map(this.loanApiMapper::toDomain)
             .flatMap(this.loanUseCase::createLoan)
-            .map(this.loanApiMapper::toResponse)
-            .flatMap(loanResponseDTO ->
-                ServerResponse.status(HttpStatus.CREATED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(loanResponseDTO)
-            );
+            .map(this.loanApiMapper::toResponse);
+
+        return this.loggingSupport.handleRequest(
+            postLogic,
+            HttpStatus.CREATED,
+            "📥 Incoming loan request",
+            "✅ Loan request successfully submitted with id",
+            LoanResponseDTO::id // 👈 Only its ID is logged
+        );
     }
 
     public Mono<ServerResponse> listenPATCHUseCase(ServerRequest serverRequest) {
         UUID loanId = UUID.fromString(serverRequest.pathVariable("id"));
 
-        return serverRequest.bodyToMono(LoanStatusDTO.class)
+        Mono<LoanResponseDTO> patchLogic = serverRequest.bodyToMono(LoanStatusDTO.class)
             .flatMap(dto -> this.loanUseCase.updateLoanStatus(loanId, dto.status().toUpperCase()))
-            .map(this.loanApiMapper::toResponse)
-            .flatMap(loanResponseDTO ->
-                ServerResponse.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(loanResponseDTO)
-            );
+            .map(this.loanApiMapper::toResponse);
+
+        return this.loggingSupport.handleRequest(
+            patchLogic,
+            HttpStatus.OK,
+            "📥 Incoming loan status change request",
+            "✅ Loan request status succesfully changed to",
+            LoanResponseDTO::status
+        );
     }
 }
