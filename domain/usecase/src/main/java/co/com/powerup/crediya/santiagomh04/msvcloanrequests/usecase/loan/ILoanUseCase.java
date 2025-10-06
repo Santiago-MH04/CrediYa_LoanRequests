@@ -34,5 +34,4 @@ public class ILoanUseCase implements LoanUseCase{
     public Mono<Loan> updateLoanStatus(UUID loanId, String newStatus) {
         return this.repoLoan.updateLoanStatus(loanId, newStatus);
     }
-
 }
