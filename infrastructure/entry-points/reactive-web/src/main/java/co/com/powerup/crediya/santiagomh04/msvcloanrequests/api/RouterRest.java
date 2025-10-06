@@ -2,8 +2,10 @@ package co.com.powerup.crediya.santiagomh04.msvcloanrequests.api;
 
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.ErrorResponseDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanRequestDTO;
+import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.dto.LoanStatusDTO;
 import co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.handlers.apiHandler.LoanHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -30,6 +32,51 @@ public class RouterRest {
     @Bean
     @RouterOperations({
         @RouterOperation(
+            path = "/api/v1/requests/{identificationNumber}",
+            produces = {MediaType.APPLICATION_JSON_VALUE},
+            method = RequestMethod.GET,
+            beanClass = LoanHandler.class,
+            beanMethod = "listenGETUseCaseFindAllByIdentificationNumber",
+            operation = @Operation(
+                operationId = "getAllLoansByUserIdentificationNumber",
+                summary = "Finds all loans by user’s identification number",
+                description = "Shows the historic of loans requested by a user",
+                tags = {"Loans"},
+                responses = {
+                    @ApiResponse(
+                        responseCode = "200",
+                        description = "Loan requests by user",
+                        content = @Content(array = @ArraySchema(schema = @Schema(implementation = LoanRequestDTO.class)))
+                    )
+                }
+            )
+        ),
+        @RouterOperation(
+            path = "/api/v1/requests/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE},
+            method = RequestMethod.GET,
+            beanClass = LoanHandler.class,
+            beanMethod = "listenGETUseCaseFindById",
+            operation = @Operation(
+                operationId = "findLoanRequest",
+                summary = "Finds a loan request",
+                description = "Fetches a loan request using its id",
+                tags = {"Loan"},
+                responses = {
+                    @ApiResponse(
+                        responseCode = "200",
+                        description = "Loan request found successfully",
+                        content = @Content(schema = @Schema(implementation = LoanRequestDTO.class))
+                    ),
+                    @ApiResponse(
+                        responseCode = "404",
+                        description = "Loan not found",
+                        content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class))
+                    )
+                }
+            )
+        ),
+        @RouterOperation(
             path = "/api/v1/requests",
             produces = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.POST,
@@ -38,7 +85,7 @@ public class RouterRest {
             operation = @Operation(
                 operationId = "registerLoanRequest",
                 summary = "Register a new loan request",
-                description = "Registers a new loan request with the information provided.",
+                description = "Registers a new loan request with the information provided",
                 tags = {"Loan"},
                 requestBody = @RequestBody(
                     required = true,
@@ -59,6 +106,36 @@ public class RouterRest {
                 }
             )
         ),
+        @RouterOperation(
+            path = "/api/v1/requests/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE},
+            method = RequestMethod.PATCH,
+            beanClass = LoanHandler.class,
+            beanMethod = "listenPATCHUseCase",
+            operation = @Operation(
+                operationId = "updateLoanRequestStatus",
+                summary = "Updates a loan request status",
+                description = "Updates an already registered loan status, either to approved or rejected",
+                tags = {"Loan"},
+                requestBody = @RequestBody(
+                    required = true,
+                    description = "Loan status",
+                    content = @Content(schema = @Schema(implementation = LoanStatusDTO.class))
+                ),
+                responses = {
+                    @ApiResponse(
+                        responseCode = "200",
+                        description = "Loan request status successfully updated",
+                        content = @Content(schema = @Schema(implementation = LoanRequestDTO.class))
+                    ),
+                    @ApiResponse(
+                        responseCode = "404",
+                        description = "Loan request not found",
+                        content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class))
+                    )
+                }
+            )
+        )
         /*@RouterOperation()*/
     })
     public RouterFunction<ServerResponse> routerFunction() {
