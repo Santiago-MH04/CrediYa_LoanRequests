@@ -13,3 +13,17 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webflux-ui
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${openapiVersion}"
 }
+
+pitest {
+    targetClasses = ['co.com.powerup.crediya.santiagomh04.msvcloanrequests.*']
+    targetTests = ['co.com.powerup.crediya.santiagomh04.msvcloanrequests.*']
+    excludedTestClasses = [
+        'co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.config.ConfigTest',
+        'co.com.powerup.crediya.santiagomh04.msvcloanrequests.api.RouterRestTest'
+    ]
+    /*threads = 4*/
+    outputFormats = ['HTML']
+}
+
+
+

@@ -141,7 +141,7 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> routerFunction() {
         return route(GET("/api/v1/requests/{identificationNumber}"), this.loanHandler::listenGETUseCaseFindAllByIdentificationNumber)
-            .and(route(GET("/api/v1/requests/{id}"), this.loanHandler::listenGETUseCaseFindById))
+            .and(route(GET("/api/v1/requests/single/{id}"), this.loanHandler::listenGETUseCaseFindById))
             .andRoute(POST("/api/v1/requests"), this.loanHandler::listenPOSTUseCase)
             .andRoute(PATCH("/api/v1/requests/{id}"), this.loanHandler::listenPATCHUseCase);
     }
