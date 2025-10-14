@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface LoanUseCase {
     Mono<Loan> createLoan(Loan loan);
     Mono<Loan> updateLoanStatus(UUID loanId, String newStatus);
-    Mono<Loan> findByid(UUID id);
+    Mono<Loan> findById(UUID id);
     Flux<Loan> findByClientIdentificationNumber(String identificationNumber);
 }

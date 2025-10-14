@@ -56,7 +56,6 @@ class ILoanUseCaseTest {
             .amount(BigDecimal.valueOf(5_000_000))
             .status(Loan.LoanStatus.PENDING_OF_REVISION)
             .build();
-
     }
 
     @Test
@@ -78,7 +77,7 @@ class ILoanUseCaseTest {
         UUID id = this.loan.getId();
         when(this.repoLoan.findById(id)).thenReturn(Mono.just(loan));
 
-        StepVerifier.create(this.loanUseCase.findByid(id))
+        StepVerifier.create(this.loanUseCase.findById(id))
             .expectNext(this.loan)
             .verifyComplete();
 

@@ -19,7 +19,7 @@ public class ILoanUseCase implements LoanUseCase{
     }
 
     @Override
-    public Mono<Loan> findByid(UUID id) {
+    public Mono<Loan> findById(UUID id) {
         return this.repoLoan.findById(id);
     }
 
